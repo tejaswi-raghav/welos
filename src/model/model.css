@@ -75,7 +75,7 @@ button:focus-visible,a:focus-visible,input:focus-visible { outline:2px solid var
 .part-detail dd { margin:0; color:#9ea59f; font-size:10px; line-height:1.55; }
 .signal-legend { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; padding:15px 18px; border-top:1px solid var(--line); color:#929a94; font:400 8px/1 "DM Mono",monospace; text-transform:uppercase; }
 .signal-legend span { display:flex; align-items:center; gap:7px; }.signal-legend i { width:6px; height:6px; border-radius:50%; }
-.signal-legend .sun { background:#ffb62e; }.signal-legend .flow { background:#53b8b2; }.signal-legend .farm { background:#59a269; }.signal-legend .wind { background:#3c8bd2; }
+.signal-legend .sun { background:#ffb62e; }.signal-legend .wind { background:#3c8bd2; }.signal-legend .water { background:#53b8b2; }.signal-legend .storage { background:#d47a28; }
 
 @media (max-width:1050px) { .model-shell { grid-template-columns:190px minmax(0,1fr) 240px; }.rail-intro { padding-inline:17px; }.rail-intro p { display:none; }.part-tabs { grid-template-columns:1fr; } }
 @media (max-width:760px) {

@@ -80,14 +80,14 @@ function ModelApp() {
         <aside className="system-rail" aria-label="Model systems">
           <div className="rail-intro">
             <span className="eyebrow">Inside the machine</span>
-            <h1>One controller.<br />Four inputs.</h1>
-            <p>Inspect the hardware architecture that measures, protects and routes every WELOS energy source.</p>
+            <h1>One machine.<br />Five systems.</h1>
+            <p>Inspect the hardware that captures, stores, treats and intelligently routes energy and water.</p>
           </div>
           <nav className="system-list">
             {systems.map((system, index) => (
               <button className={view === system.id ? "system-button active" : "system-button"} key={system.id} onClick={() => chooseSystem(system.id)} aria-pressed={view === system.id}>
                 <span className="system-index">{String(index + 1).padStart(2, "0")}</span>
-                <span><strong>{system.name}</strong><small>{system.label}</small></span>
+                <span><strong>{system.name}</strong><small>{system.short}</small></span>
                 <ChevronRight size={15} aria-hidden="true" />
               </button>
             ))}
@@ -128,7 +128,7 @@ function ModelApp() {
             </dl>
           </article>
           <div className="signal-legend" aria-label="System signal legend">
-            <span><i className="sun" /> Sun</span><span><i className="flow" /> Flow</span><span><i className="farm" /> Farm</span><span><i className="wind" /> Wind</span>
+            <span><i className="sun" /> Solar</span><span><i className="wind" /> Wind</span><span><i className="water" /> Water</span><span><i className="storage" /> Storage</span>
           </div>
         </aside>
       </main>

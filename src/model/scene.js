@@ -18,10 +18,10 @@ const COLORS = {
 const VIEW_PRESETS = {
   overview: { camera: [10.5, 8.2, 15], target: [0, 0, 0], zoom: 1 },
   controller: { camera: [5.6, 3.6, 8.5], target: [0, 0.1, 0], zoom: 1 },
-  sun: { camera: [-8.5, 5.3, 8.4], target: [-5.8, 2.3, 0], zoom: 1 },
-  flow: { camera: [-8.8, 1.2, 7.2], target: [-5.8, -2.7, 0], zoom: 1 },
-  farm: { camera: [8.8, 1.2, 7.2], target: [5.8, -2.7, 0], zoom: 1 },
+  solar: { camera: [-8.5, 5.3, 8.4], target: [-5.8, 2.3, 0], zoom: 1 },
   wind: { camera: [8.8, 5.8, 8.4], target: [5.8, 2.4, 0], zoom: 1 },
+  water: { camera: [-9.2, 1.1, 7.4], target: [-5.8, -2.6, 0], zoom: 1 },
+  storage: { camera: [9.2, 1.4, 7.5], target: [5.5, -2.6, 0], zoom: 1 },
 };
 const CONTROLLER_EXPLODED_CAMERA = new THREE.Vector3(10.5, 6.8, 16.5);
 
@@ -184,108 +184,118 @@ function createController(registry) {
   return cabinet;
 }
 
-function createSun(registry) {
+function createSolar(registry) {
   const group = new THREE.Group();
-  const panelFrame = box([3.0, 1.82, 0.12], 0x485258, { metalness: 0.75, roughness: 0.3 });
-  group.add(panelFrame);
-  const cellGeo = new THREE.BoxGeometry(0.43, 0.36, 0.035);
-  const cellMat = material(0x174d68, { metalness: 0.35, roughness: 0.3, clearcoat: 0.8 });
-  const cells = new THREE.InstancedMesh(cellGeo, cellMat, 24);
+  const array = new THREE.Group();
+  const frame = box([3.35, 1.9, 0.12], 0x485258, { metalness: 0.75, roughness: 0.3 });
+  array.add(frame);
+  const cellGeo = new THREE.BoxGeometry(0.48, 0.36, 0.035);
+  const cells = new THREE.InstancedMesh(cellGeo, material(0x174d68, { metalness: 0.35, roughness: 0.3 }), 24);
   const matrix = new THREE.Matrix4();
   let index = 0;
-  for (let y = 0; y < 4; y += 1) {
-    for (let x = 0; x < 6; x += 1) {
-      matrix.makeTranslation(-1.2 + x * 0.48, -0.6 + y * 0.4, 0.08);
-      cells.setMatrixAt(index, matrix);
-      index += 1;
-    }
+  for (let y = 0; y < 4; y += 1) for (let x = 0; x < 6; x += 1) {
+    matrix.makeTranslation(-1.3 + x * 0.52, -0.6 + y * 0.4, 0.08);
+    cells.setMatrixAt(index++, matrix);
   }
-  group.add(cells);
-  const stand = box([0.13, 2.2, 0.13], 0x69716d, { metalness: 0.8, roughness: 0.32 });
-  stand.rotation.z = -0.42;
-  stand.position.set(0.85, -1.05, -0.65);
-  group.add(stand);
+  array.add(cells);
+  group.add(assignPart(array, "pv-array", registry));
+
+  const rack = new THREE.Group();
+  [-1.25, 1.25].forEach((x) => {
+    const leg = box([0.13, 2.2, 0.13], 0x69716d, { metalness: 0.8, roughness: 0.32 });
+    leg.rotation.z = -0.42;
+    leg.position.set(x, -1.08, -0.65);
+    rack.add(leg);
+  });
+  group.add(assignPart(rack, "pv-racking", registry));
+
+  const gutter = box([3.55, 0.18, 0.22], COLORS.cyan, { metalness: 0.45, roughness: 0.3 });
+  gutter.position.set(0, -1.03, 0.03);
+  group.add(assignPart(gutter, "rain-gutter", registry));
   group.rotation.x = -0.25;
   group.rotation.y = 0.28;
   group.position.set(-5.8, 2.35, 0);
-  return assignPart(group, "sun-array", registry);
+  return group;
 }
 
 function createWind(registry) {
   const group = new THREE.Group();
-  const tower = cylinder(0.12, 4.0, 0x9aa19d, 24, { metalness: 0.85, roughness: 0.27 });
-  tower.position.y = -0.4;
-  group.add(tower);
-  const nacelle = box([0.78, 0.38, 0.42], COLORS.white, { metalness: 0.35, roughness: 0.4 });
-  nacelle.position.y = 1.63;
-  group.add(nacelle);
+  const mast = cylinder(0.11, 3.4, 0x9aa19d, 24, { metalness: 0.85, roughness: 0.27 });
+  mast.position.y = -1.15;
+  group.add(mast);
+
   const rotor = new THREE.Group();
   rotor.name = "wind-rotor";
-  const hub = cylinder(0.18, 0.28, COLORS.copper, 24, { metalness: 0.75, roughness: 0.28 });
-  hub.rotation.x = Math.PI / 2;
-  rotor.add(hub);
+  const shaft = cylinder(0.1, 2.7, COLORS.copper, 20, { metalness: 0.8, roughness: 0.24 });
+  rotor.add(shaft);
   for (let i = 0; i < 3; i += 1) {
-    const blade = box([0.18, 1.65, 0.07], COLORS.white, { metalness: 0.25, roughness: 0.35 });
-    blade.position.y = 0.82;
-    blade.rotation.z = i * ((Math.PI * 2) / 3);
+    const blade = box([0.18, 2.45, 0.62], COLORS.white, { metalness: 0.22, roughness: 0.34 });
+    blade.position.x = 0.67;
+    blade.rotation.y = i * ((Math.PI * 2) / 3);
     rotor.add(blade);
   }
-  rotor.position.set(0, 1.63, 0.35);
-  group.add(rotor);
+  rotor.position.y = 1.15;
+  group.add(assignPart(rotor, "vawt-rotor", registry));
+  const generator = cylinder(0.47, 0.58, COLORS.dark, 28, { metalness: 0.58, roughness: 0.34 });
+  generator.position.y = -0.55;
+  group.add(assignPart(generator, "wind-generator", registry));
+  const brake = cylinder(0.55, 0.18, COLORS.red, 28, { metalness: 0.65, roughness: 0.3 });
+  brake.position.y = -0.18;
+  group.add(assignPart(brake, "wind-brake", registry));
   group.position.set(5.8, 2.35, 0);
-  group.scale.setScalar(0.9);
-  return assignPart(group, "wind-turbine", registry);
+  group.scale.setScalar(0.86);
+  return group;
 }
 
-function createFlow(registry) {
+function createWater(registry) {
   const group = new THREE.Group();
-  const pipe = cylinder(0.52, 3.4, COLORS.blue, 36, { metalness: 0.4, roughness: 0.38 });
-  pipe.rotation.z = Math.PI / 2;
-  group.add(pipe);
-  const housing = cylinder(0.86, 0.6, 0x6f7773, 40, { metalness: 0.75, roughness: 0.32 });
-  housing.rotation.z = Math.PI / 2;
-  group.add(housing);
-  const wheel = new THREE.Group();
-  wheel.name = "flow-rotor";
-  for (let i = 0; i < 8; i += 1) {
-    const blade = box([0.12, 0.68, 0.18], COLORS.copper, { metalness: 0.85, roughness: 0.24 });
-    blade.position.y = 0.32;
-    blade.rotation.z = i * (Math.PI / 4);
-    wheel.add(blade);
+  const tank = cylinder(1.05, 2.05, 0x345f66, 40, { metalness: 0.2, roughness: 0.52 });
+  tank.position.set(0, -0.15, 0);
+  group.add(assignPart(tank, "water-tank", registry));
+  const firstFlush = cylinder(0.2, 1.7, COLORS.cyan, 24, { metalness: 0.3, roughness: 0.4 });
+  firstFlush.position.set(-1.42, 0.15, 0);
+  group.add(assignPart(firstFlush, "first-flush", registry));
+
+  const filters = new THREE.Group();
+  [0xeeeeea, 0x78aebb, 0x222b27].forEach((color, i) => {
+    const canister = cylinder(0.22, 1.05, color, 24, { metalness: 0.2, roughness: 0.38 });
+    canister.position.x = -0.52 + i * 0.52;
+    filters.add(canister);
+  });
+  filters.position.set(1.62, -0.15, 0);
+  group.add(assignPart(filters, "filter-train", registry));
+  const pump = cylinder(0.32, 0.72, COLORS.dark, 24, { metalness: 0.6, roughness: 0.34 });
+  pump.rotation.z = Math.PI / 2;
+  pump.position.set(1.25, -1.2, 0);
+  group.add(assignPart(pump, "water-pump", registry));
+  const sensors = new THREE.Group();
+  for (let i = 0; i < 3; i += 1) {
+    const probe = cylinder(0.07, 0.62, COLORS.amber, 16, { metalness: 0.7, roughness: 0.25 });
+    probe.position.set(-0.28 + i * 0.28, 1.18, 0);
+    sensors.add(probe);
   }
-  wheel.position.z = 0.34;
-  group.add(wheel);
-  const generator = box([1.1, 0.76, 0.72], COLORS.dark, { metalness: 0.55, roughness: 0.36 });
-  generator.position.set(0, 0.92, 0);
-  group.add(generator);
-  group.position.set(-5.8, -2.7, 0);
-  group.rotation.y = -0.24;
-  return assignPart(group, "flow-turbine", registry);
+  group.add(assignPart(sensors, "water-sensors", registry));
+  group.position.set(-5.8, -2.6, 0);
+  group.scale.setScalar(0.9);
+  return group;
 }
 
-function createFarm(registry) {
+function createEnergyCore(registry) {
   const group = new THREE.Group();
-  const tank = cylinder(0.95, 1.7, 0x54765d, 40, { metalness: 0.22, roughness: 0.54 });
-  tank.position.y = 0.12;
-  group.add(tank);
-  const dome = new THREE.Mesh(
-    new THREE.SphereGeometry(0.96, 36, 18, 0, Math.PI * 2, 0, Math.PI / 2),
-    material(0x6b8d70, { metalness: 0.2, roughness: 0.5 }),
-  );
-  dome.position.y = 0.98;
-  group.add(dome);
-  const generator = box([1.65, 0.9, 1.0], COLORS.dark, { metalness: 0.45, roughness: 0.42 });
-  generator.position.set(1.62, -0.28, 0);
-  group.add(generator);
-  const gasPipe = new THREE.Mesh(
-    new THREE.TorusGeometry(1.05, 0.08, 12, 36, Math.PI / 2),
-    material(COLORS.amber, { metalness: 0.45, roughness: 0.38 }),
-  );
-  gasPipe.rotation.z = -Math.PI / 2;
-  gasPipe.position.set(0.95, 0.98, 0);
-  group.add(gasPipe);
-  group.position.set(5.4, -2.7, 0);
-  return assignPart(group, "farm-digester", registry);
+  const makeUnit = (id, pos, size, color) => {
+    const unit = box(size, color, { metalness: 0.48, roughness: 0.38 });
+    unit.position.set(...pos);
+    group.add(assignPart(unit, id, registry));
+  };
+  makeUnit("lifepo4-battery", [-0.7, -0.55, 0], [1.35, 2.25, 1.15], 0x26312c);
+  makeUnit("hybrid-inverter", [0.78, 0.55, 0], [1.25, 1.55, 0.75], COLORS.white);
+  makeUnit("mppt", [0.4, -0.9, 0.05], [0.68, 0.72, 0.62], COLORS.green);
+  makeUnit("wind-rectifier", [1.2, -0.9, 0.05], [0.68, 0.72, 0.62], COLORS.blue);
+  makeUnit("dc-bus", [0.1, 1.62, 0], [2.7, 0.22, 0.35], COLORS.copper);
+  makeUnit("load-panel", [1.75, 0.35, 0], [0.62, 1.95, 0.72], COLORS.dark);
+  group.position.set(5.35, -2.6, 0);
+  group.scale.setScalar(0.9);
+  return group;
 }
 
 function createConnection(from, to, color) {
@@ -326,7 +336,7 @@ export function createWelosScene(container, { onSelect, onReady, onError }) {
   renderer.toneMapping = THREE.NeutralToneMapping;
   renderer.toneMappingExposure = 1.08;
   renderer.transmissionResolutionScale = 0.5;
-  renderer.domElement.setAttribute("aria-label", "Interactive 3D model of the WELOS controller and four renewable-energy modules");
+  renderer.domElement.setAttribute("aria-label", "Interactive 3D model of the WELOS solar, wind, water, storage and control hardware");
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
@@ -356,12 +366,12 @@ export function createWelosScene(container, { onSelect, onReady, onError }) {
 
   const root = new THREE.Group();
   scene.add(root);
-  root.add(createController(registry), createSun(registry), createWind(registry), createFlow(registry), createFarm(registry));
+  root.add(createController(registry), createSolar(registry), createWind(registry), createWater(registry), createEnergyCore(registry));
   root.add(
     createConnection([-4.4, 1.8, -0.1], [-1.6, 0.9, -0.2], COLORS.amber),
     createConnection([4.4, 1.8, -0.1], [1.6, 0.9, -0.2], COLORS.blue),
     createConnection([-4.4, -2.3, -0.1], [-1.6, -0.9, -0.2], COLORS.cyan),
-    createConnection([4.2, -2.3, -0.1], [1.6, -0.9, -0.2], COLORS.green),
+    createConnection([4.1, -2.3, -0.1], [1.6, -0.9, -0.2], COLORS.copper),
   );
 
   const floor = new THREE.Mesh(
@@ -474,10 +484,8 @@ export function createWelosScene(container, { onSelect, onReady, onError }) {
 
     if (!prefersReduced) {
       const windRotor = root.getObjectByName("wind-rotor");
-      const flowRotor = root.getObjectByName("flow-rotor");
       const statusLight = root.getObjectByName("controller-status-light");
-      if (windRotor) windRotor.rotation.z = now * 0.00035;
-      if (flowRotor) flowRotor.rotation.z = -now * 0.00022;
+      if (windRotor) windRotor.rotation.y = now * 0.00035;
       if (statusLight) statusLight.material.emissiveIntensity = 0.45 + Math.sin(now * 0.003) * 0.32;
       root.children.forEach((child) => {
         if (child.userData.flowLine && child.material) child.material.dashOffset = -(now * 0.00022);

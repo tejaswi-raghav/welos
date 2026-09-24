@@ -1,21 +1,33 @@
-# SunWindRain Landing Page
+# WELOS
 
-Premium React/Vite landing page for the SunWindRain integrated renewable-energy + rainwater system.
+WELOS is an integrated renewable-energy and rainwater product concept with a local, offline-first control OS. This repository contains the public site, an interactive 3D product model, a browser control simulator and ESP32-S3 reference firmware.
 
 ## Run
-1. Install Node.js.
-2. Open this folder in a terminal.
-3. Run `npm install`
-4. Run `npm run dev`
-5. Open the local URL shown by Vite.
+```bash
+npm install
+npm run dev
+```
 
-The concept image from the supplied reference is included at `public/sunwindrain-system.png`.
+Open the local URL shown by Vite. The product tools are separate entry points:
 
-## Included
-- Responsive premium climate-tech landing page
-- Interactive architecture modules
-- Resource-flow diagrams
-- Edge-control dashboard simulation
-- Solar-soiling / condition-based maintenance section
-- Prototype specifications
-- UAE-specific project context and technical framing
+- `/` — cinematic product story
+- `/model.html` — selectable 3D hardware architecture
+- `/control.html` — live WELOS OS simulator
+
+## Product foundation
+
+- Solar photovoltaic canopy with integrated rain catchment
+- Compact vertical-axis wind module with independent braking
+- First-flush, filtration, UV, tank, pumping and water-quality instrumentation
+- 48 V LiFePO4 storage, MPPT, wind rectification and hybrid inverter
+- ESP32-S3 edge controller, local API, authenticated commands and offline operation
+- Deterministic safety-oriented control modes and fault handling
+
+See [hardware/bom.json](hardware/bom.json) for the structured concept BOM and [docs/HARDWARE_ARCHITECTURE.md](docs/HARDWARE_ARCHITECTURE.md) for interfaces and prototype gates. The 3D model and BOM are an engineering concept, not production CAD or a substitute for licensed structural, electrical, grid and water-safety design.
+
+## Verify
+
+```bash
+npm run check
+npm run firmware:build  # requires PlatformIO
+```

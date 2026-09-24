@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "test:control": "node --test src/control/engine.test.js",
-    "check": "npm run test:control && npm run build",
+    "test:model": "node --test src/model/parts.test.js",
+    "check": "npm run test:control && npm run test:model && npm run build",
     "firmware:build": "pio run -d firmware"
   },
   "dependencies": {
