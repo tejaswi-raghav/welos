@@ -26,7 +26,14 @@ function ModelApp() {
     if (!viewportRef.current) return undefined;
     sceneRef.current = createWelosScene(viewportRef.current, {
       onReady: () => setReady(true),
-      onSelect: (id) => setSelectedId(id),
+      onSelect: (id) => {
+        setSelectedId(id);
+        const system = partById[id]?.system;
+        if (system) {
+          setView(system);
+          sceneRef.current?.setView(system);
+        }
+      },
       onError: () => setError("This browser could not start the 3D renderer."),
     });
     sceneRef.current?.selectPart(DEFAULT_PART);
@@ -41,22 +48,13 @@ function ModelApp() {
   function chooseSystem(id) {
     setView(id);
     sceneRef.current?.setView(id);
-    if (id !== "controller") {
-      setSeparation(0);
-      const first = parts.find((part) => part.system === id);
-      if (first) choosePart(first.id);
-    } else {
-      choosePart(DEFAULT_PART);
-    }
+    const first = parts.find((part) => part.system === id);
+    choosePart(first?.id || DEFAULT_PART);
   }
 
   function updateSeparation(value) {
     const next = Number(value);
     setSeparation(next);
-    if (view !== "controller") {
-      setView("controller");
-      sceneRef.current?.setView("controller");
-    }
     sceneRef.current?.setExploded(next / 100);
   }
 
@@ -81,7 +79,7 @@ function ModelApp() {
           <div className="rail-intro">
             <span className="eyebrow">Inside the machine</span>
             <h1>One machine.<br />Five systems.</h1>
-            <p>Inspect the hardware that captures, stores, treats and intelligently routes energy and water.</p>
+            <p>A compact rooftop appliance: one canopy, one chassis and connected energy and water systems.</p>
           </div>
           <nav className="system-list">
             {systems.map((system, index) => (
@@ -99,12 +97,13 @@ function ModelApp() {
         </aside>
 
         <section className="viewport-panel" aria-label="Interactive WELOS 3D model">
-          <div className="viewport-meta"><span><Crosshair size={14} /> Drag to orbit</span><span>Scroll to zoom</span></div>
+          <div className="viewport-meta"><span><Crosshair size={14} /> Drag to orbit</span><span>Scroll to zoom · click a part</span></div>
+          <div className="view-caption"><span>{systems.find((system) => system.id === view)?.code} / {systems.find((system) => system.id === view)?.name}</span><p>{systems.find((system) => system.id === view)?.summary}</p></div>
           <div ref={viewportRef} className="model-viewport" />
           {!ready && !error && <div className="model-loading" role="status"><div className="loading-mark"><span /><span /><span /></div><p>Assembling system model</p></div>}
           {error && <div className="model-error" role="alert"><Box size={30} /><strong>3D view unavailable</strong><p>{error} The component index remains available for inspection.</p></div>}
           <div className="view-controls">
-            <label htmlFor="separation"><Layers3 size={15} aria-hidden="true" />Controller separation</label>
+            <label htmlFor="separation"><Layers3 size={15} aria-hidden="true" />System separation</label>
             <input id="separation" type="range" min="0" max="100" step="1" value={separation} onChange={(event) => updateSeparation(event.target.value)} />
             <output htmlFor="separation">{separation === 0 ? "Assembled" : `${separation}%`}</output>
             <button onClick={resetScene} aria-label="Reset model view"><RotateCcw size={15} /></button>
@@ -136,4 +135,6 @@ function ModelApp() {
   );
 }
 
-createRoot(document.getElementById("model-root")).render(<ModelApp />);
+const appRoot = createRoot(document.getElementById("model-root"));
+appRoot.render(<ModelApp />);
+if (import.meta.hot) import.meta.hot.dispose(() => appRoot.unmount());

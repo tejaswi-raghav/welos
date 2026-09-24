@@ -11,7 +11,7 @@ npm run dev
 Open the local URL shown by Vite. The product tools are separate entry points:
 
 - `/` — cinematic product story
-- `/model.html` — selectable 3D hardware architecture
+- `/model.html` — integrated rooftop 3D appliance with selectable hardware and full-system separation
 - `/control.html` — live WELOS OS simulator
 
 ## Product foundation

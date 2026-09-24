@@ -2,7 +2,7 @@
 
 WELOS is a modular appliance that combines a photovoltaic rain-catching canopy, measured-site urban wind, protected battery storage and monitored rainwater treatment. A local edge controller runs the WELOS OS and continues safe operation without the cloud.
 
-The browser model at `/model.html` is a selectable, exploded engineering concept. It is not fabrication CAD and does not establish structural, electrical, drinking-water or grid compliance.
+The browser model at `/model.html` depicts a single rooftop unit: a shared panel and rain-catching canopy above the water, power and control bays, with a VAWT on the same platform. A soiling reference cell and valved cleaning rail show how maintenance is triggered and carried out. Its interactive separation view reveals 27 major components. It is a proportioned engineering concept, not fabrication CAD, and does not establish structural, electrical, drinking-water or grid compliance.
 
 ## Product boundary
 

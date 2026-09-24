@@ -1,6 +1,6 @@
 {
   "product": "WELOS integrated resource appliance",
-  "revision": "concept-0.2",
+  "revision": "concept-0.3",
   "notice": "Engineering concept BOM. Final ratings, part numbers and certifications require site requirements and licensed engineering review.",
   "architecture": {
     "dcBusNominalV": 48,
@@ -16,8 +16,10 @@
         { "ref": "S01", "item": "PV modules", "qty": 6, "selection": "IEC-certified mono PV, voltage/current matched to MPPT" },
         { "ref": "S02", "item": "Corrosion-resistant racking and fasteners", "qty": 1, "selection": "Site wind load and roof/base interface" },
         { "ref": "S03", "item": "Perimeter gutter, downpipe and leaf screen", "qty": 1, "selection": "Food/contact-safe material if required by intended water use" },
-        { "ref": "S04", "item": "PV string isolator, fuse and Type 2 DC SPD", "qty": 1, "selection": "Rated to string Voc, Isc and local code" },
-        { "ref": "S05", "item": "Irradiance and module-temperature sensors", "qty": 1, "selection": "Outdoor-rated, calibrated" }
+        { "ref": "S04", "item": "Soiling reference cell and irradiance measurement", "qty": 1, "selection": "Calibrated against local dust and clean-panel output" },
+        { "ref": "S05", "item": "Valved low-flow panel cleaning manifold and nozzles", "qty": 1, "selection": "Coverage, water budget and electrical separation validated" },
+        { "ref": "S06", "item": "PV string isolator, fuse and Type 2 DC SPD", "qty": 1, "selection": "Rated to string Voc, Isc and local code" },
+        { "ref": "S07", "item": "Module-temperature sensor", "qty": 1, "selection": "Outdoor-rated, calibrated" }
       ]
     },
     {
@@ -26,47 +28,47 @@
         { "ref": "W01", "item": "Helical vertical-axis rotor and mast", "qty": 1, "selection": "Fatigue, vibration and acoustic validation required" },
         { "ref": "W02", "item": "Permanent-magnet generator", "qty": 1, "selection": "Matched torque-speed curve" },
         { "ref": "W03", "item": "Fail-safe brake and overspeed switch", "qty": 1, "selection": "Independent shutdown path" },
-        { "ref": "W04", "item": "Three-phase rectifier/controller and dump load", "qty": 1, "selection": "Worst-case open-circuit voltage and thermal energy" },
-        { "ref": "W05", "item": "Anemometer and vibration sensor", "qty": 1, "selection": "Outdoor-rated; redundant overspeed sensing preferred" }
+        { "ref": "W04", "item": "Anemometer and vibration sensor", "qty": 1, "selection": "Outdoor-rated; redundant overspeed sensing preferred" }
       ]
     },
     {
       "id": "water",
       "items": [
         { "ref": "R01", "item": "First-flush diverter with drain valve", "qty": 1, "selection": "Volume sized to catchment and dust loading" },
-        { "ref": "R02", "item": "Sediment and activated-carbon filter train", "qty": 1, "selection": "Micron stages determined by source testing" },
-        { "ref": "R03", "item": "UV reactor with intensity/interlock sensor", "qty": 1, "selection": "Dose validated at maximum flow" },
-        { "ref": "R04", "item": "Opaque storage tank with screened vent, overflow and drain", "qty": 1, "selection": "Capacity and material per intended use" },
-        { "ref": "R05", "item": "Variable-speed pump, accumulator and check valve", "qty": 1, "selection": "Duty point based on final hydraulic design" },
+        { "ref": "R02", "item": "Sediment, activated-carbon and UV train", "qty": 1, "selection": "Micron stages and UV dose determined by water testing and maximum flow" },
+        { "ref": "R03", "item": "Opaque storage tank with screened vent, overflow and drain", "qty": 1, "selection": "Capacity and material per intended use" },
+        { "ref": "R04", "item": "Variable-speed pump, accumulator and check valve", "qty": 1, "selection": "Duty point based on final hydraulic design" },
+        { "ref": "R05", "item": "Level, flow, pressure, turbidity, conductivity and leak sensors", "qty": 1, "selection": "Calibrated, serviceable sensor set" },
         { "ref": "R06", "item": "Motorized isolation/bypass valves", "qty": 3, "selection": "Fail-safe position defined by hazard analysis" },
-        { "ref": "R07", "item": "Level, flow, pressure, turbidity, conductivity and leak sensors", "qty": 1, "selection": "Calibrated, serviceable sensor set" },
-        { "ref": "R08", "item": "Backflow prevention and air gap", "qty": 1, "selection": "Required wherever potable plumbing could be connected" }
+        { "ref": "R07", "item": "Backflow prevention and air gap", "qty": 1, "selection": "Required wherever potable plumbing could be connected" }
       ]
     },
     {
       "id": "energy-storage",
       "items": [
         { "ref": "E01", "item": "PV MPPT charger", "qty": 1, "selection": "PV window and 48 V battery compatible" },
-        { "ref": "E02", "item": "LiFePO4 battery modules with BMS", "qty": 1, "selection": "Certified rack pack with CAN interface" },
-        { "ref": "E03", "item": "Hybrid inverter/charger", "qty": 1, "selection": "Locally certified with approved anti-islanding" },
+        { "ref": "E02", "item": "Wind rectifier/controller and dump load", "qty": 1, "selection": "Worst-case open-circuit voltage and thermal energy" },
+        { "ref": "E03", "item": "LiFePO4 battery modules with BMS", "qty": 1, "selection": "Certified rack pack with CAN interface" },
         { "ref": "E04", "item": "DC busbars, main fuse, disconnect, pre-charge and contactors", "qty": 1, "selection": "Fault-current and touch-safe design" },
-        { "ref": "E05", "item": "Critical-load AC panel with RCD/RCBO and SPD", "qty": 1, "selection": "Circuit schedule per installation" },
-        { "ref": "E06", "item": "Current, voltage and insulation monitoring", "qty": 1, "selection": "Galvanically isolated measurement" },
-        { "ref": "E07", "item": "Bonding, earthing and lightning protection components", "qty": 1, "selection": "Designed to site and local code" }
+        { "ref": "E05", "item": "Hybrid inverter/charger", "qty": 1, "selection": "Locally certified with approved anti-islanding" },
+        { "ref": "E06", "item": "Critical-load AC panel with RCD/RCBO and SPD", "qty": 1, "selection": "Circuit schedule per installation" },
+        { "ref": "E07", "item": "Current, voltage and insulation monitoring", "qty": 1, "selection": "Galvanically isolated measurement" },
+        { "ref": "E08", "item": "Bonding, earthing and lightning protection components", "qty": 1, "selection": "Designed to site and local code" }
       ]
     },
     {
       "id": "control-core",
       "items": [
-        { "ref": "C01", "item": "IP-rated ventilated control enclosure and grounded backplate", "qty": 1, "selection": "Ingress and thermal rating per climate" },
-        { "ref": "C02", "item": "WELOS ESP32-S3 edge controller with hardware watchdog", "qty": 1, "selection": "Isolated field I/O and secure boot" },
-        { "ref": "C03", "item": "Revenue/grade bidirectional Modbus meter", "qty": 1, "selection": "Accuracy and approval per market" },
-        { "ref": "C04", "item": "24 V DIN-rail power supply and isolated DC/DC converters", "qty": 1, "selection": "Input and surge category per installation" },
+        { "ref": "C01", "item": "IP-rated ventilated control enclosure", "qty": 1, "selection": "Ingress and thermal rating per climate" },
+        { "ref": "C02", "item": "Grounded control backplate", "qty": 1, "selection": "Bonded metal mounting plane" },
+        { "ref": "C03", "item": "WELOS ESP32-S3 edge controller with hardware watchdog", "qty": 1, "selection": "Isolated field I/O and secure boot" },
+        { "ref": "C04", "item": "Bidirectional Modbus energy meter", "qty": 1, "selection": "Accuracy and approval per market" },
         { "ref": "C05", "item": "Breakers, fuses, SPDs, safety contactors and emergency stop", "qty": 1, "selection": "Independent of application software" },
-        { "ref": "C06", "item": "RS-485, CAN and Ethernet isolated interfaces", "qty": 1, "selection": "Surge-protected field communications" },
-        { "ref": "C07", "item": "Secure element and optional LTE gateway", "qty": 1, "selection": "Device identity and signed update support" },
-        { "ref": "C08", "item": "DIN rail, segregated terminals, glands and labelled harness", "qty": 1, "selection": "Power/SELV separation maintained" },
-        { "ref": "C09", "item": "Cabinet temperature, humidity, smoke and door sensors", "qty": 1, "selection": "Local alarm and shutdown inputs" }
+        { "ref": "C06", "item": "RS-485, CAN and Ethernet gateway with optional LTE and secure element", "qty": 1, "selection": "Device identity, field isolation and signed updates" },
+        { "ref": "C07", "item": "DIN rail, segregated terminals, glands and labelled harness", "qty": 1, "selection": "Power/SELV separation maintained" },
+        { "ref": "C08", "item": "Filtered fan and cabinet temperature monitoring", "qty": 1, "selection": "Thermal strategy validated for site climate" },
+        { "ref": "C09", "item": "24 V DIN-rail power supply and isolated DC/DC converters", "qty": 1, "selection": "Input and surge category per installation" },
+        { "ref": "C10", "item": "Humidity, smoke and door sensors", "qty": 1, "selection": "Local alarm and shutdown inputs" }
       ]
     }
   ]
