@@ -6,3 +6,4 @@ dist/
 output/playwright/
 output/model-review*/
 firmware/.pio/
+.env*
