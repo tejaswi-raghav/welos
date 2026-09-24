@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { ArrowLeft, Box, ChevronRight, Crosshair, Layers3, RotateCcw } from "lucide-react";
 import { partById, parts, systems } from "./parts.js";
+import { softwareLayers } from "./software.js";
 import { createWelosScene } from "./scene.js";
 import "./model.css";
 
@@ -15,8 +16,11 @@ function ModelApp() {
   const [view, setView] = useState("overview");
   const [selectedId, setSelectedId] = useState(DEFAULT_PART);
   const [separation, setSeparation] = useState(0);
+  const [inspectorMode, setInspectorMode] = useState("hardware");
+  const [softwareId, setSoftwareId] = useState("runtime");
 
   const selected = partById[selectedId] || partById[DEFAULT_PART];
+  const selectedLayer = softwareLayers.find((layer) => layer.id === softwareId) || softwareLayers[0];
   const visibleParts = useMemo(() => {
     if (view === "overview" || view === "controller") return parts.filter((part) => part.system === "controller");
     return parts.filter((part) => part.system === view);
@@ -28,6 +32,7 @@ function ModelApp() {
       onReady: () => setReady(true),
       onSelect: (id) => {
         setSelectedId(id);
+        setInspectorMode("hardware");
         const system = partById[id]?.system;
         if (system) {
           setView(system);
@@ -111,24 +116,54 @@ function ModelApp() {
         </section>
 
         <aside className="inspector" aria-live="polite">
-          <div className="inspector-head"><span>Component index</span><span>{String(visibleParts.length).padStart(2, "0")}</span></div>
-          <div className="part-tabs" role="list" aria-label="Visible components">
-            {visibleParts.map((part) => (
-              <button key={part.id} className={part.id === selectedId ? "part-tab active" : "part-tab"} onClick={() => choosePart(part.id)} role="listitem"><span>{part.code}</span>{part.name}</button>
-            ))}
+          <div className="inspector-switch" role="group" aria-label="Architecture breakdown">
+            <button className={inspectorMode === "hardware" ? "active" : ""} aria-pressed={inspectorMode === "hardware"} onClick={() => setInspectorMode("hardware")}>Hardware</button>
+            <button className={inspectorMode === "software" ? "active" : ""} aria-pressed={inspectorMode === "software"} onClick={() => setInspectorMode("software")}>Software</button>
           </div>
-          <article className="part-detail">
-            <div className="detail-code">{selected.code} / {selected.category}</div>
-            <h2>{selected.name}</h2>
-            <p className="detail-role">{selected.role}</p>
-            <dl>
-              <div><dt>What the model shows</dt><dd>{selected.evidence}</dd></div>
-              <div><dt>Validation</dt><dd>{selected.status}</dd></div>
-            </dl>
-          </article>
-          <div className="signal-legend" aria-label="System signal legend">
-            <span><i className="sun" /> Solar</span><span><i className="wind" /> Wind</span><span><i className="water" /> Water</span><span><i className="storage" /> Storage</span>
-          </div>
+          {inspectorMode === "hardware" ? (
+            <>
+              <div className="inspector-head"><span>Component index</span><span>{String(visibleParts.length).padStart(2, "0")}</span></div>
+              <div className="part-tabs" aria-label="Visible components">
+                {visibleParts.map((part) => (
+                  <button key={part.id} className={part.id === selectedId ? "part-tab active" : "part-tab"} onClick={() => choosePart(part.id)}><span>{part.code}</span>{part.name}</button>
+                ))}
+              </div>
+              <article className="part-detail">
+                <div className="detail-code">{selected.code} / {selected.category}</div>
+                <h2>{selected.name}</h2>
+                <p className="detail-role">{selected.role}</p>
+                <dl>
+                  <div><dt>What the model shows</dt><dd>{selected.evidence}</dd></div>
+                  <div><dt>Validation</dt><dd>{selected.status}</dd></div>
+                </dl>
+              </article>
+              <div className="signal-legend" aria-label="System signal legend">
+                <span><i className="sun" /> Solar</span><span><i className="wind" /> Wind</span><span><i className="water" /> Water</span><span><i className="storage" /> Storage</span>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="inspector-head"><span>WELOS OS stack</span><span>{String(softwareLayers.length).padStart(2, "0")}</span></div>
+              <div className="part-tabs" aria-label="Software layers">
+                {softwareLayers.map((layer) => (
+                  <button key={layer.id} className={layer.id === softwareId ? "part-tab active" : "part-tab"} onClick={() => setSoftwareId(layer.id)}><span>{layer.code}</span>{layer.name}</button>
+                ))}
+              </div>
+              <article className="part-detail">
+                <div className="detail-code">{selectedLayer.code} / {selectedLayer.category}</div>
+                <h2>{selectedLayer.name}</h2>
+                <p className="detail-role">{selectedLayer.role}</p>
+                <dl>
+                  <div><dt>Implementation</dt><dd className="implementation-path">{selectedLayer.implementation}</dd></div>
+                  <div><dt>Operating boundary</dt><dd>{selectedLayer.boundary}</dd></div>
+                </dl>
+              </article>
+              <div className="software-footer">
+                <div className="software-flow" aria-label="Software control flow">Sense <span>→</span> Decide <span>→</span> Act <span>→</span> Report</div>
+                <a className="simulator-link" href="/control.html">Open live OS simulator <ChevronRight size={15} aria-hidden="true" /></a>
+              </div>
+            </>
+          )}
         </aside>
       </main>
     </div>

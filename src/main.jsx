@@ -302,7 +302,7 @@ function App() {
               to decide how every available resource should be used.
             </p>
             <div className="hero-actions">
-              <a href="#system" className="button button-dark">See how it works <span>↓</span></a>
+              <a href="/model.html" className="button button-dark">Explore the 3D product <span>↗</span></a>
               <a href="#research" className="text-link">Why this matters in the UAE <span>↗</span></a>
             </div>
             <div className="hero-micro">
