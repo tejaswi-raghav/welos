@@ -72,16 +72,16 @@ function addPlatform(root) {
     place(root, block([0.52, 0.2, 0.52], 0x879891, 0.04, 0.7), x, -2.28, z);
     place(root, cyl(0.085, 0.045, C.black, 0.8, 16), x, -2.16, z);
   }));
-  // Structural uprights keep the canopy, collection frame and lower hardware in one unit.
-  [-3.7, 1.85].forEach((x) => [-2, 1.6].forEach((z) => {
-    beam(root, [x, -1.89, z], [x, 1.35, z], 0.065, C.frame, 0.72);
-    place(root, block([0.25, 0.11, 0.25], 0x9cad9f, 0.02, 0.72), x, 1.34, z);
-  }));
   place(root, block([7.6, 0.05, 0.08], C.green, 0.015, 0.3), 0, -1.95, 3.1);
 }
 
 function addSolar(root, registry) {
+  [-3.7, 1.85].forEach((x) => [-2, 1.6].forEach((z) => {
+    beam(root, [x, -1.89, z], [x, 1.35, z], 0.065, C.frame, 0.72);
+    place(root, block([0.25, 0.11, 0.25], 0x9cad9f, 0.02, 0.72), x, 1.34, z);
+  }));
   const canopy = new THREE.Group();
+  place(canopy, block([6.05, 0.045, 3.7], 0x879b94, 0.025, 0.65), 0, -0.21, 0);
   const rack = new THREE.Group();
   [-1.65, 1.65].forEach((z) => {
     place(rack, block([5.95, 0.13, 0.1], C.frame, 0.025, 0.72), 0, -0.13, z);
@@ -131,7 +131,8 @@ function addSolar(root, registry) {
   canopy.rotation.x = -0.12;
   canopy.position.set(-0.95, 1.62, -0.28);
   root.add(canopy);
-  return canopy;
+  const solarCable = pipe(root, [[-0.95, 1.5, -0.3], [-0.95, 0.85, -0.3], [1.3, 0.85, -0.3], [1.3, 0.08, 1.45]], 0.025, C.solar);
+  solarCable.name = "solar-cable";
 }
 
 function helixBlade(phase) {
@@ -188,6 +189,7 @@ function addWind(root, registry) {
   }
   rotor.name = "wind-rotor";
   register(root, registry, "vawt-rotor", rotor, [3.25, 2.25, -0.9], [0.65, 0.55, -0.2]);
+  pipe(root, [[3.25, 0.3, -0.9], [3.25, -0.65, -0.9], [2.2, -0.65, -0.9], [2.2, 0.05, 1.44]], 0.025, C.wind);
 }
 
 function addWater(root, registry) {
@@ -308,11 +310,26 @@ function addStorage(root, registry) {
   unit("dc-bus", [1.2, 0.09, 0.18], [1.75, -0.13, 1.88], C.energy, [0, 0.53, 0.72]);
   const panel = unit("load-panel", [0.63, 1.25, 0.52], [3.05, -0.87, 1.61], C.shell, [0.7, 0, 0.6]);
   for (let i = 0; i < 4; i += 1) place(panel, block([0.35, 0.1, 0.015], C.black, 0.008, 0.2), 0, -0.4 + i * 0.25, 0.27);
-  pipe(root, [[-0.95, 1.5, -0.3], [-0.95, 0.85, -0.3], [1.3, 0.85, -0.3], [1.3, 0.08, 1.45]], 0.025, C.solar);
-  pipe(root, [[3.25, 0.3, -0.9], [3.25, -0.65, -0.9], [2.2, -0.65, -0.9], [2.2, 0.05, 1.44]], 0.025, C.wind);
 }
 
-export function createWelosScene(container, { onSelect, onReady, onError }) {
+function addHydro(root) {
+  const assembly = new THREE.Group();
+  const inlet = cyl(0.29, 2.0, C.water, 0.4);
+  inlet.rotation.z = Math.PI / 2;
+  place(assembly, inlet, -0.12, 0, 0);
+  const housing = cyl(0.52, 0.64, C.frame, 0.72);
+  housing.rotation.z = Math.PI / 2;
+  place(assembly, housing, 0, 0, 0);
+  const cap = cyl(0.42, 0.04, C.energy, 0.65);
+  cap.rotation.z = Math.PI / 2;
+  place(assembly, cap, 0.35, 0, 0);
+  place(assembly, block([0.7, 0.48, 0.6], C.dark, 0.07, 0.55), 0.2, 0.58, 0);
+  pipe(assembly, [[-1.35, 0, 0], [-1.05, 0, 0], [-0.9, 0, 0]], 0.22, C.water);
+  place(root, assembly, -3.1, -1.22, 2.2);
+  return assembly;
+}
+
+export function createWelosScene(container, { onSelect, onReady, onError, modules: initialModules } = {}) {
   const registry = new Map();
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   let renderer;
@@ -326,7 +343,7 @@ export function createWelosScene(container, { onSelect, onReady, onError }) {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.6;
-  renderer.domElement.setAttribute("aria-label", "Interactive 3D WELOS rooftop appliance with solar canopy, wind turbine, rainwater system, battery and controller");
+  renderer.domElement.setAttribute("aria-label", "Interactive 3D WELOS rooftop appliance with configurable solar, wind, water and hydro add-ons");
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
@@ -358,11 +375,28 @@ export function createWelosScene(container, { onSelect, onReady, onError }) {
   const root = new THREE.Group();
   scene.add(root);
   addPlatform(root);
-  addSolar(root, registry);
-  addWind(root, registry);
-  addWater(root, registry);
-  addController(root, registry);
-  addStorage(root, registry);
+  const assemblies = {};
+  for (const [name, builder] of Object.entries({ solar: addSolar, wind: addWind, water: addWater, controller: addController, storage: addStorage })) {
+    const group = new THREE.Group();
+    builder(group, registry);
+    root.add(group);
+    assemblies[name] = group;
+  }
+  assemblies.hydro = addHydro(root);
+  function setModules(next) {
+    const selection = { solar: true, wind: true, water: true, hydro: false, ...next };
+    assemblies.solar.visible = selection.solar || selection.water;
+    assemblies.wind.visible = !!selection.wind;
+    assemblies.water.visible = !!selection.water;
+    assemblies.hydro.visible = !!selection.hydro;
+    for (const id of ["pv-array", "pv-racking", "soiling-sensor", "cleaning-manifold"]) registry.get(id).visible = !!selection.solar;
+    registry.get("rain-gutter").visible = !!selection.water;
+    const cable = assemblies.solar.getObjectByName("solar-cable");
+    if (cable) cable.visible = !!selection.solar;
+    registry.get("mppt").visible = !!selection.solar;
+    registry.get("wind-rectifier").visible = !!selection.wind;
+    requestRender();
+  }
 
   const floor = new THREE.Mesh(new THREE.CircleGeometry(9.7, 72), new THREE.MeshBasicMaterial({ color: 0x1b2a25, transparent: true, opacity: 0.55 }));
   floor.rotation.x = -Math.PI / 2;
@@ -386,6 +420,7 @@ export function createWelosScene(container, { onSelect, onReady, onError }) {
   let pending = false;
   let pointerStart = null;
   let transitioning = false;
+  setModules(initialModules);
 
   function selectPart(id, notify = false) {
     if (selected && registry.has(selected)) registry.get(selected).traverse((child) => {
@@ -456,8 +491,7 @@ export function createWelosScene(container, { onSelect, onReady, onError }) {
       object.position.lerp(object.userData.destination, reduced ? 1 : 1 - Math.pow(0.86, dt * 60));
     });
     if (!reduced) {
-      const rotor = registry.get("vawt-rotor");
-      rotor.rotation.y += dt * 0.32;
+      if (assemblies.wind.visible) registry.get("vawt-rotor").rotation.y += dt * 0.32;
     }
     controls.update();
     renderer.render(scene, camera);
@@ -476,7 +510,7 @@ export function createWelosScene(container, { onSelect, onReady, onError }) {
   requestAnimationFrame(() => { if (!disposed) onReady?.(); });
 
   return {
-    setView, setExploded, selectPart, reset,
+    setView, setExploded, setModules, selectPart, reset,
     get view() { return view; },
     dispose() {
       disposed = true;

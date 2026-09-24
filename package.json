@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "test:control": "node --test src/control/engine.test.js",
     "test:model": "node --test src/model/parts.test.js",
+    "test:configure": "node --test src/configurator/recommend.test.js",
     "check": "npm run test:control && npm run test:model && npm run build",
     "firmware:build": "pio run -d firmware"
   },

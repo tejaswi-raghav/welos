@@ -285,8 +285,9 @@ function App() {
           <a href="#intelligence">Intelligence</a>
           <a href="#prototype">Prototype</a>
           <a href="/model.html">3D model</a>
+          <a href="/configure.html">Configure</a>
         </nav>
-        <a className="nav-cta" href="/model.html">Open 3D model <span>↗</span></a>
+        <a className="nav-cta" href="/configure.html">Configure your WELOS <span>↗</span></a>
       </header>
 
       <main id="top">
@@ -303,6 +304,7 @@ function App() {
             </p>
             <div className="hero-actions">
               <a href="/model.html" className="button button-dark">Explore the 3D product <span>↗</span></a>
+              <a href="/configure.html" className="text-link">Configure for your site <span>↗</span></a>
               <a href="#research" className="text-link">Why this matters in the UAE <span>↗</span></a>
             </div>
             <div className="hero-micro">

@@ -76,7 +76,7 @@ function ModelApp() {
       <header className="model-header">
         <a className="back-link" href="/"><ArrowLeft size={15} aria-hidden="true" />Back to WELOS</a>
         <div className="wordmark" aria-label="WELOS">wel<span>o</span>s</div>
-        <div className="prototype-label"><i /> Interactive concept / 01</div>
+        <a className="prototype-label" href="/configure.html" style={{ textDecoration: "none" }}><i /> Configure for your site ↗</a>
       </header>
 
       <main className="model-shell">
