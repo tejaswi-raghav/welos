@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { createControllerState, DEFAULT_CONFIG, evaluateController, MODES } from "./engine.js";
 import { advanceSimulation, createInitialSensors, SCENARIOS } from "./simulator.js";
 import "./control.css";
+import "../page-brand.css";
 
 const TICK_SECONDS = 60;
 const MAX_HISTORY = 48;
@@ -104,7 +105,7 @@ function App() {
   return (
     <div className="control-app">
       <header className="topbar">
-        <a className="control-brand" href="/" aria-label="Return to WELOS website"><span>wel</span><b>os</b><small>CONTROL OS</small></a>
+        <a className="control-brand page-brand" href="/" aria-label="WELOS home"><img src="/welos-brand-transparent.png" alt="" /><span><strong>WELOS</strong><small>URBAN RESOURCE SYSTEM</small></span></a>
         <div className="topbar-site"><span>ROOFTOP NODE</span><b>DXB–WLS–001</b></div>
         <div className="topbar-clock"><span>SIMULATION TIME</span><b>{new Date(sensors.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" })}</b></div>
         <div className={`connection ${connectionHealthy ? "online" : "offline"}`}><i />{connectionHealthy ? "LINK HEALTHY" : "SAFETY LOCK"}</div>
@@ -196,7 +197,7 @@ function BatteryPanel({ sensors, result, history }) {
   const trend = history.map((item) => item.soc);
   return <div className="battery-wrap">
     <div className="battery-main"><div className="battery-shell"><span style={{ height: `${sensors.batterySoc}%` }} /></div><div><strong>{fmt(sensors.batterySoc, "%", 1)}</strong><small>STATE OF CHARGE</small><em>Protected floor {result.power.reserveSoc}%</em></div></div>
-    <Sparkline values={trend} color="#8ed33f" />
+    <Sparkline values={trend} color="#F0A50E" />
     <div className="instrument-row"><Instrument label="Voltage" value={fmt(sensors.batteryVoltageV, " V", 1)} /><Instrument label="Current" value={fmt(sensors.batteryCurrentA, " A", 1)} /><Instrument label="Temperature" value={fmt(sensors.batteryTempC, "°C", 1)} /></div>
     <div className="charge-state"><span>{result.power.batteryChargeKw > 0 ? "CHARGING" : result.power.batteryDischargeKw > 0 ? "SUPPLYING" : "RESERVE HOLD"}</span><b>{fmt(result.power.batteryChargeKw || result.power.batteryDischargeKw, " kW", 2)}</b></div>
   </div>;

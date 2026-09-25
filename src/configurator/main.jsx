@@ -3,12 +3,13 @@ import { createRoot } from "react-dom/client";
 import { createWelosScene } from "../model/scene.js";
 import { DEFAULT_CLIMATE, DEFAULT_REQUIREMENTS, recommendModules } from "./recommend.js";
 import "./style.css";
+import "../page-brand.css";
 
 const ADDONS = [
-  { id: "solar", name: "Solar canopy", description: "PV array, MPPT and performance sensing", symbol: "☀", color: "#ffc362" },
-  { id: "wind", name: "Wind turbine", description: "Vertical-axis rotor and rectifier", symbol: "↝", color: "#a8d9df" },
-  { id: "water", name: "Rain recovery", description: "Gutter, filtration and storage", symbol: "◈", color: "#75c8d7" },
-  { id: "hydro", name: "Micro-hydro", description: "Flow-powered generation module", symbol: "≈", color: "#73baea" },
+  { id: "solar", name: "Solar canopy", description: "PV array, MPPT and performance sensing", symbol: "☀", color: "#F0A50E" },
+  { id: "wind", name: "Wind turbine", description: "Vertical-axis rotor and rectifier", symbol: "↝", color: "#F0A50E" },
+  { id: "water", name: "Rain recovery", description: "Gutter, filtration and storage", symbol: "◈", color: "#F0A50E" },
+  { id: "hydro", name: "Micro-hydro", description: "Flow-powered generation module", symbol: "≈", color: "#F0A50E" },
 ];
 const CLIMATE_FIELDS = [
   ["solarDailyKwhM2", "Solar irradiation", "kWh/m²/day", 0, 10, 0.1],
@@ -108,7 +109,7 @@ function App() {
   }
 
   return <div className="configure-app">
-    <header className="configure-header"><a href="/" className="back">← &nbsp; WELOS HOME</a><a className="logo" href="/">wel<span>o</span>s</a><a className="header-model" href="/model.html">EXPLORE MODEL ↗</a></header>
+    <header className="configure-header"><a className="page-brand" href="/" aria-label="WELOS home"><img src="/welos-brand-transparent.png" alt="" /><span><strong>WELOS</strong><small>URBAN RESOURCE SYSTEM</small></span></a><div className="page-header-title">SITE CONFIGURATOR</div><a className="page-back" href="/">← &nbsp; OVERVIEW</a></header>
     <main className="configure-main">
       <section className="intro"><div className="eyebrow"><i /> CONFIGURATION STUDIO / 01</div><h1>Built for <em>your</em> site.</h1><p>Start with your location for a climate-informed concept, or shape the machine yourself. Every add-on you select appears on the 3D preview.</p></section>
       <div className="workspace">

@@ -5,17 +5,19 @@ import { partById, parts, systems } from "./parts.js";
 import { softwareLayers } from "./software.js";
 import { createWelosScene } from "./scene.js";
 import "./model.css";
+import "../page-brand.css";
 
 const DEFAULT_PART = "controller-pcb";
 
 function ModelApp() {
+  const initiallyExploded = new URLSearchParams(window.location.search).get("exploded") === "1";
   const viewportRef = useRef(null);
   const sceneRef = useRef(null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
   const [view, setView] = useState("overview");
   const [selectedId, setSelectedId] = useState(DEFAULT_PART);
-  const [separation, setSeparation] = useState(0);
+  const [separation, setSeparation] = useState(initiallyExploded ? 72 : 0);
   const [inspectorMode, setInspectorMode] = useState("hardware");
   const [softwareId, setSoftwareId] = useState("runtime");
 
@@ -42,6 +44,7 @@ function ModelApp() {
       onError: () => setError("This browser could not start the 3D renderer."),
     });
     sceneRef.current?.selectPart(DEFAULT_PART);
+    if (initiallyExploded) sceneRef.current?.setExploded(0.72);
     return () => sceneRef.current?.dispose();
   }, []);
 
@@ -74,9 +77,9 @@ function ModelApp() {
   return (
     <div className="model-app">
       <header className="model-header">
-        <a className="back-link" href="/"><ArrowLeft size={15} aria-hidden="true" />Back to WELOS</a>
-        <div className="wordmark" aria-label="WELOS">wel<span>o</span>s</div>
-        <a className="prototype-label" href="/configure.html" style={{ textDecoration: "none" }}><i /> Configure for your site ↗</a>
+        <a className="page-brand" href="/" aria-label="WELOS home"><img src="/welos-brand-transparent.png" alt="" /><span><strong>WELOS</strong><small>URBAN RESOURCE SYSTEM</small></span></a>
+        <div className="page-header-title">{initiallyExploded ? "EXPLODED VIEW" : "3D MODEL"}</div>
+        <a className="page-back" href="/"><ArrowLeft size={15} aria-hidden="true" /> OVERVIEW</a>
       </header>
 
       <main className="model-shell">
