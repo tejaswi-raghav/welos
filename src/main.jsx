@@ -285,6 +285,7 @@ function App() {
           <a href="#intelligence">Intelligence</a>
           <a href="#prototype">Prototype</a>
           <a href="/model.html">3D model</a>
+          <a href="/explore.html">Exploded view</a>
           <a href="/configure.html">Configure</a>
         </nav>
         <a className="nav-cta" href="/configure.html">Configure your WELOS <span>↗</span></a>
