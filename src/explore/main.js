@@ -441,7 +441,6 @@ function scrollable() { return document.documentElement.scrollHeight - innerHeig
 function goTo(t) { window.scrollTo({ top: (t / T_MAX) * scrollable(), behavior: reduce ? 'auto' : 'smooth' }); }
 $('#ctaExplore').addEventListener('click', () => { location.href = '/model.html'; });
 $('#ctaTech').addEventListener('click', () => { location.href = '/control.html'; });
-$('#home').addEventListener('click', e => { e.preventDefault(); goTo(0); });
 const stepEls = [...document.querySelectorAll('#steps li')];
 const STEP_T = [15.0, 15.1, 15.2, 15.3, 15.4, 15.5, 15.6, 15.72];
 

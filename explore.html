@@ -6,33 +6,32 @@
 <title>welos — System 01, taken apart</title>
 <meta name="description" content="A scroll-driven engineering exhibit of the welos rooftop appliance: wind, solar, power and rainwater systems, disassembled and rebuilt.">
 <link rel="icon" href="/welos-brand-transparent.png">
-<meta name="theme-color" content="#ECEBE7">
+<meta name="theme-color" content="#FEFDFD">
 <meta property="og:title" content="welos — System 01, taken apart">
-<meta property="og:image" content="/sunwindrain-system.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#ECEBE7; --ink:#000000; --ink-2:rgba(0,0,0,.64); --ink-3:rgba(0,0,0,.42);
+  --paper:#FEFDFD; --ink:#000000; --ink-2:rgba(0,0,0,.64); --ink-3:rgba(0,0,0,.42);
   --rule:rgba(0,0,0,.16); --rule-faint:rgba(0,0,0,.035);
-  --orange:#E76250; --solar:#D0921F; --water:#2A70B0;
-  --panel-fade:rgba(236,235,231,.94); --dim:#E3E2DD; --shadow:.17;
+  --orange:#F0A50E; --solar:#F0A50E; --water:#F0A50E;
+  --panel-fade:rgba(254,253,253,.94); --dim:#FEFDFD; --shadow:.17;
   --f:'Archivo', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --paper:#1B1D1F; --ink:#F3F2EE; --ink-2:rgba(243,242,238,.68); --ink-3:rgba(243,242,238,.44);
-    --rule:rgba(243,242,238,.18); --rule-faint:rgba(243,242,238,.04);
-    --orange:#F07A62; --solar:#F2B544; --water:#5AA2E0;
-    --panel-fade:rgba(27,29,31,.94); --dim:#2A2D30; --shadow:.4;
+    --paper:#000000; --ink:#FEFDFD; --ink-2:rgba(254,253,253,.68); --ink-3:rgba(254,253,253,.44);
+    --rule:rgba(254,253,253,.18); --rule-faint:rgba(254,253,253,.04);
+    --orange:#F0A50E; --solar:#F0A50E; --water:#F0A50E;
+    --panel-fade:rgba(0,0,0,.94); --dim:#000000; --shadow:.4;
   }
 }
 :root[data-theme="dark"]{
-  --paper:#1B1D1F; --ink:#F3F2EE; --ink-2:rgba(243,242,238,.68); --ink-3:rgba(243,242,238,.44);
-  --rule:rgba(243,242,238,.18); --rule-faint:rgba(243,242,238,.04);
-  --orange:#F07A62; --solar:#F2B544; --water:#5AA2E0;
-  --panel-fade:rgba(27,29,31,.94); --dim:#2A2D30; --shadow:.4;
+  --paper:#000000; --ink:#FEFDFD; --ink-2:rgba(254,253,253,.68); --ink-3:rgba(254,253,253,.44);
+  --rule:rgba(254,253,253,.18); --rule-faint:rgba(254,253,253,.04);
+  --orange:#F0A50E; --solar:#F0A50E; --water:#F0A50E;
+  --panel-fade:rgba(0,0,0,.94); --dim:#000000; --shadow:.4;
 }
 :root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
 html{ scroll-padding-top:env(safe-area-inset-top,0px); }
@@ -131,8 +130,8 @@ nav.rail button:focus-visible{ outline:1.5px solid var(--ink); outline-offset:3p
 .ref button:focus-visible{ outline:1.5px solid var(--ink); outline-offset:8px; }
 .ref-img{ position:relative; display:block; }
 .ref-img img{ display:block; width:100%; height:100%; object-fit:cover;
-  -webkit-mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent),linear-gradient(to bottom,transparent,#000 6%,#000 94%,transparent);
-  -webkit-mask-composite:source-in; mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent),linear-gradient(to bottom,transparent,#000 6%,#000 94%,transparent); mask-composite:intersect; }
+  -webkit-mask-image:linear-gradient(to right,transparent,#000000 6%,#000000 94%,transparent),linear-gradient(to bottom,transparent,#000000 6%,#000000 94%,transparent);
+  -webkit-mask-composite:source-in; mask-image:linear-gradient(to right,transparent,#000000 6%,#000000 94%,transparent),linear-gradient(to bottom,transparent,#000000 6%,#000000 94%,transparent); mask-composite:intersect; }
 .ref-img::after{ content:""; position:absolute; inset:-7px; pointer-events:none; --c:var(--ink-3);
   background:
    linear-gradient(var(--c),var(--c)) left top/11px 1px no-repeat, linear-gradient(var(--c),var(--c)) left top/1px 11px no-repeat,
@@ -147,8 +146,8 @@ nav.rail button:focus-visible{ outline:1.5px solid var(--ink); outline-offset:3p
 #lb img{ max-width:min(1100px,100%); max-height:calc(100% - 60px); object-fit:contain; mix-blend-mode:multiply; }
 #lb p{ margin:0; font-stretch:75%; font-weight:600; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-2); text-align:center; }
 #lb p b{ color:var(--ink); }
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .ref{ mix-blend-mode:normal; } :root:not([data-theme="light"]) .ref-img, :root:not([data-theme="light"]) #lb img{ background:#ECEBE7; mix-blend-mode:normal; } }
-:root[data-theme="dark"] .ref{ mix-blend-mode:normal; } :root[data-theme="dark"] .ref-img, :root[data-theme="dark"] #lb img{ background:#ECEBE7; mix-blend-mode:normal; }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .ref{ mix-blend-mode:normal; } :root:not([data-theme="light"]) .ref-img, :root:not([data-theme="light"]) #lb img{ background:#FEFDFD; mix-blend-mode:normal; } }
+:root[data-theme="dark"] .ref{ mix-blend-mode:normal; } :root[data-theme="dark"] .ref-img, :root[data-theme="dark"] #lb img{ background:#FEFDFD; mix-blend-mode:normal; }
 @media (max-width: 760px){ .ref{ padding:8px 8px 6px; } .ref figcaption{ font-size:9.5px; margin-top:8px; } .ref figcaption .kind{ display:none; } }
 @media (prefers-reduced-motion: reduce){ #lb{ transition:none; } }
 @media (max-width: 1100px){ .panels{ width:min(360px, 40vw); } }
@@ -166,6 +165,16 @@ nav.rail button:focus-visible{ outline:1.5px solid var(--ink); outline-offset:3p
   #track{ height:calc(17 * 100vh + 100vh); }
 }
 @media (prefers-reduced-motion: reduce){ nav.rail button .lbl, nav.rail button .tick{ transition:none; } #veil{ transition:none; } }
+:root,:root[data-theme="dark"]{--paper:#FEFDFD;--ink:#000000;--ink-2:rgba(0,0,0,.65);--ink-3:rgba(0,0,0,.42);--rule:rgba(0,0,0,.16);--rule-faint:rgba(0,0,0,.035);--orange:#F0A50E;--solar:#F0A50E;--water:#F0A50E;--panel-fade:rgba(254,253,253,.94);--dim:#FEFDFD}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#FEFDFD;--ink:#000000;--ink-2:rgba(0,0,0,.65);--ink-3:rgba(0,0,0,.42);--rule:rgba(0,0,0,.16);--rule-faint:rgba(0,0,0,.035);--orange:#F0A50E;--solar:#F0A50E;--water:#F0A50E;--panel-fade:rgba(254,253,253,.94);--dim:#FEFDFD}}
+header.top{z-index:4;height:60px;background:#FEFDFD;border-bottom:1px solid rgba(0,0,0,.16)}
+.mark.page-brand{display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:#000000}
+.mark.page-brand img{width:46px;height:46px;object-fit:contain}
+.mark.page-brand>span{display:flex;flex-direction:column;gap:3px;border-left:1px solid rgba(0,0,0,.2);padding-left:9px;color:#000000}
+.mark.page-brand strong{font:800 13px/1 Manrope,Arial,sans-serif;letter-spacing:-.04em}
+.mark.page-brand small{font:500 7px/1.25 Arial,sans-serif;letter-spacing:.06em;color:#000000}
+.ref-img img,#lb img{background:#FEFDFD!important}
+@media(max-width:640px){.mark.page-brand img{width:38px;height:38px}.mark.page-brand strong{font-size:11px}.mark.page-brand small{font-size:6px}}
 </style>
 </head>
 <body>
@@ -181,7 +190,7 @@ nav.rail button:focus-visible{ outline:1.5px solid var(--ink); outline-offset:3p
 <div id="lb" role="dialog" aria-modal="true" aria-label="Reference visual"><img id="lbImg" alt=""><p><b id="lbCode"></b>&nbsp;&nbsp;<span id="lbT"></span>&nbsp;&nbsp;·&nbsp;&nbsp;Supplied reference visual. The interactive model is the engineering source.</p></div>
 
 <header class="top">
-  <a class="mark" href="#" id="home" aria-label="welos, back to top">wel<span>os</span></a>
+  <a class="mark page-brand" href="/" id="home" aria-label="WELOS home"><img src="/welos-brand-transparent.png" alt=""><span><strong>WELOS</strong><small>URBAN RESOURCE SYSTEM</small></span></a>
   <div class="status"><span class="hide-m">System <b>01</b></span><span>Scene <b id="sc">00</b> / 16</span><span class="hide-m" id="scn">The object</span></div>
 </header>
 
