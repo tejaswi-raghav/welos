@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>welos — System 01, taken apart</title>
+<meta name="description" content="A scroll-driven engineering exhibit of the welos rooftop appliance: wind, solar, power and rainwater systems, disassembled and rebuilt.">
+<link rel="icon" href="/welos-brand-transparent.png">
+<meta name="theme-color" content="#ECEBE7">
+<meta property="og:title" content="welos — System 01, taken apart">
+<meta property="og:image" content="/sunwindrain-system.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ECEBE7; --ink:#000000; --ink-2:rgba(0,0,0,.64); --ink-3:rgba(0,0,0,.42);
+  --rule:rgba(0,0,0,.16); --rule-faint:rgba(0,0,0,.035);
+  --orange:#E76250; --solar:#D0921F; --water:#2A70B0;
+  --panel-fade:rgba(236,235,231,.94); --dim:#E3E2DD; --shadow:.17;
+  --f:'Archivo', system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#1B1D1F; --ink:#F3F2EE; --ink-2:rgba(243,242,238,.68); --ink-3:rgba(243,242,238,.44);
+    --rule:rgba(243,242,238,.18); --rule-faint:rgba(243,242,238,.04);
+    --orange:#F07A62; --solar:#F2B544; --water:#5AA2E0;
+    --panel-fade:rgba(27,29,31,.94); --dim:#2A2D30; --shadow:.4;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#1B1D1F; --ink:#F3F2EE; --ink-2:rgba(243,242,238,.68); --ink-3:rgba(243,242,238,.44);
+  --rule:rgba(243,242,238,.18); --rule-faint:rgba(243,242,238,.04);
+  --orange:#F07A62; --solar:#F2B544; --water:#5AA2E0;
+  --panel-fade:rgba(27,29,31,.94); --dim:#2A2D30; --shadow:.4;
+}
+:root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+html{ scroll-padding-top:env(safe-area-inset-top,0px); }
+*,*::before,*::after{ box-sizing:inherit; }
+body{ margin:0; background:var(--paper); color:var(--ink); font-family:var(--f); font-size:15px; line-height:1.5; -webkit-font-smoothing:antialiased; }
+#gl{ position:fixed; top:0; left:0; width:100%; height:100%; display:block; }
+
+/* technical grid + registration marks */
+.grid{ position:fixed; inset:0; pointer-events:none;
+  background-image:linear-gradient(var(--rule-faint) 1px,transparent 1px),linear-gradient(90deg,var(--rule-faint) 1px,transparent 1px);
+  background-size:96px 96px; background-position:-1px -1px; }
+.reg{ position:fixed; width:14px; height:14px; pointer-events:none; }
+.reg::before,.reg::after{ content:""; position:absolute; background:var(--ink-3); }
+.reg::before{ left:6px; top:0; width:1px; height:14px; } .reg::after{ top:6px; left:0; height:1px; width:14px; }
+.reg.tl{ top:calc(env(safe-area-inset-top,0px) + 64px); left:20px } .reg.tr{ top:calc(env(safe-area-inset-top,0px) + 64px); right:20px }
+.reg.bl{ bottom:calc(env(safe-area-inset-bottom,0px) + 20px); left:20px } .reg.br{ bottom:calc(env(safe-area-inset-bottom,0px) + 20px); right:20px }
+
+/* overlays */
+#lines{ position:fixed; inset:0; z-index:3; width:100%; height:100%; pointer-events:none; overflow:visible; }
+#labels{ position:fixed; inset:0; pointer-events:none; z-index:3; }
+.co{ position:absolute; left:0; top:0; will-change:transform,opacity; opacity:0; max-width:200px; }
+.co{ text-shadow:0 0 2px var(--paper), 0 0 5px var(--paper), 0 0 9px var(--paper), 0 0 14px var(--paper); }
+.co .code{ display:block; font-stretch:75%; font-weight:600; font-size:10.5px; letter-spacing:.08em; color:var(--ink-3); font-variant-numeric:tabular-nums; }
+.co .t{ display:block; font-stretch:88%; font-weight:620; font-size:12.5px; letter-spacing:.045em; text-transform:uppercase; line-height:1.2; }
+.co .s{ display:block; font-size:12px; line-height:1.35; color:var(--ink-2); margin-top:2px; }
+.co.l{ text-align:right; }
+.co.accent-w .code{ color:var(--orange) } .co.accent-s .code{ color:var(--solar) } .co.accent-b .code{ color:var(--water) }
+
+header.top{ position:fixed; left:0; right:0; top:env(safe-area-inset-top,0px); height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 28px; pointer-events:none; }
+.mark{ font-stretch:118%; font-weight:760; font-size:23px; letter-spacing:-.02em; pointer-events:auto; color:var(--ink); text-decoration:none; }
+.mark span{ color:var(--orange); }
+.status{ display:flex; gap:22px; font-stretch:75%; font-weight:560; font-size:11px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-2); font-variant-numeric:tabular-nums; }
+.status b{ color:var(--ink); font-weight:650; }
+
+/* scene rail */
+nav.rail{ position:fixed; right:22px; top:50%; transform:translateY(-50%); display:flex; flex-direction:column; gap:3px; }
+nav.rail button{ all:unset; cursor:pointer; display:flex; align-items:center; justify-content:flex-end; gap:10px; height:20px; font-stretch:75%; font-weight:560; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); font-variant-numeric:tabular-nums; }
+nav.rail button .lbl{ opacity:0; transform:translateX(4px); transition:opacity .2s, transform .2s; white-space:nowrap; }
+nav.rail button .tick{ width:14px; height:1px; background:var(--ink-3); transition:width .25s, background .25s; }
+nav.rail button:hover .lbl, nav.rail button:focus-visible .lbl{ opacity:1; transform:none; }
+nav.rail button.on{ color:var(--ink); } nav.rail button.on .tick{ width:30px; background:var(--ink); }
+nav.rail button:focus-visible{ outline:1.5px solid var(--ink); outline-offset:3px; }
+
+/* scene panels */
+.panels{ position:fixed; left:36px; top:calc(env(safe-area-inset-top,0px) + 108px); width:min(390px, 34vw); pointer-events:none; }
+.panel{ position:absolute; left:0; top:0; width:100%; opacity:0; visibility:hidden; }
+.panel.live{ pointer-events:auto; }
+.label{ font-stretch:75%; font-weight:600; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-2); font-variant-numeric:tabular-nums; }
+.num{ display:block; font-stretch:125%; font-weight:300; font-size:64px; line-height:.9; letter-spacing:-.04em; margin:0 0 14px; font-variant-numeric:tabular-nums; }
+.num.w{ color:var(--orange) } .num.s{ color:var(--solar) } .num.b{ color:var(--water) }
+.panel h2{ font-stretch:108%; font-weight:760; font-size:clamp(22px,2.2vw,30px); line-height:1.02; letter-spacing:-.01em; text-transform:uppercase; margin:6px 0 14px; }
+.panel p{ margin:0 0 14px; max-width:36ch; color:var(--ink-2); }
+.panel p.q{ color:var(--ink); font-size:16.5px; line-height:1.45; }
+.mega{ font-stretch:112%; font-weight:800; font-size:clamp(46px,6.4vw,112px); line-height:.86; letter-spacing:-.035em; margin:18px 0 26px; }
+.mega.sm{ font-size:clamp(32px,3.9vw,66px); }
+.specs{ display:grid; grid-template-columns:auto 1fr; gap:6px 18px; margin:18px 0 8px; padding-top:12px; border-top:1px solid var(--rule); font-size:13px; }
+.specs dt{ font-stretch:75%; font-weight:600; font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); padding-top:2px; }
+.specs dd{ margin:0; font-weight:560; font-variant-numeric:tabular-nums; }
+.fine{ font-size:11.5px; color:var(--ink-3); max-width:40ch; }
+.flow{ list-style:none; margin:16px 0 6px; padding:0; font-stretch:80%; font-weight:620; font-size:12px; letter-spacing:.08em; text-transform:uppercase; }
+.flow li{ position:relative; padding-left:18px; height:26px; line-height:26px; }
+.flow li::before{ content:""; position:absolute; left:3px; top:9px; width:7px; height:7px; border-radius:50%; background:currentColor; }
+.flow li:not(:last-child)::after{ content:""; position:absolute; left:6px; top:18px; width:1px; height:17px; background:currentColor; opacity:.45; }
+.flow.s{ color:var(--solar) } .flow.b{ color:var(--water) } .flow li span{ color:var(--ink); }
+.bus{ display:grid; grid-template-columns:repeat(3,auto); gap:4px 10px; justify-content:start; align-items:center; margin:16px 0 8px; font-stretch:78%; font-weight:620; font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
+.bus .n{ border:1px solid var(--rule); padding:5px 8px; text-align:center; }
+.bus .a{ color:var(--ink-3); text-align:center; }
+.bus .sol{ border-color:var(--solar); } .bus .wnd{ border-color:var(--orange); }
+.parts{ columns:2; column-gap:18px; margin:10px 0 0; padding:0; list-style:none; font-size:12.5px; color:var(--ink-2); }
+.parts li{ break-inside:avoid; padding:2px 0; }
+.parts li b{ font-stretch:75%; font-weight:620; font-size:10.5px; letter-spacing:.08em; color:var(--ink); margin-right:6px; }
+.steps{ list-style:none; margin:14px 0 0; padding:0; font-stretch:80%; font-weight:600; font-size:12px; letter-spacing:.08em; text-transform:uppercase; }
+.steps li{ display:flex; gap:12px; padding:4px 0; border-bottom:1px solid var(--rule); color:var(--ink-3); transition:color .2s; }
+.steps li.done{ color:var(--ink); } .steps li i{ font-style:normal; width:22px; font-variant-numeric:tabular-nums; }
+.hint{ margin-top:34px; font-stretch:75%; font-weight:600; font-size:11px; letter-spacing:.12em; text-transform:uppercase; }
+.cta{ display:flex; flex-wrap:wrap; gap:10px; margin-top:26px; }
+.cta button{ font:inherit; font-stretch:88%; font-weight:650; font-size:12.5px; letter-spacing:.08em; text-transform:uppercase; padding:13px 20px; cursor:pointer; border:1px solid var(--ink); background:var(--ink); color:var(--paper); border-radius:0; }
+.cta button.ghost{ background:transparent; color:var(--ink); }
+.cta button:hover{ opacity:.86 } .cta button:focus-visible{ outline:2px solid var(--orange); outline-offset:3px; }
+.two{ transition:opacity .3s; }
+
+.foot{ position:fixed; left:36px; bottom:calc(env(safe-area-inset-bottom,0px) + 20px); display:flex; gap:26px; font-stretch:75%; font-weight:560; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); font-variant-numeric:tabular-nums; pointer-events:none; }
+.foot b{ color:var(--ink-2); font-weight:620; }
+
+#track{ height:calc(17 * 118vh + 100vh); }
+#veil{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:var(--paper); transition:opacity .8s; z-index:5; }
+#veil p{ font-stretch:75%; font-weight:600; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-2); }
+#veil.gone{ opacity:0; pointer-events:none; }
+
+
+/* reference plates: supplied product visuals tied to the model */
+.ref{ position:fixed; left:0; top:0; margin:0; padding:12px 12px 10px; background:var(--paper); opacity:0; visibility:hidden; will-change:transform,opacity; z-index:2; }
+.ref-img img{ mix-blend-mode:multiply; }
+.ref.live{ pointer-events:auto; }
+.ref button{ all:unset; display:block; cursor:zoom-in; position:relative; }
+.ref button:focus-visible{ outline:1.5px solid var(--ink); outline-offset:8px; }
+.ref-img{ position:relative; display:block; }
+.ref-img img{ display:block; width:100%; height:100%; object-fit:cover;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent),linear-gradient(to bottom,transparent,#000 6%,#000 94%,transparent);
+  -webkit-mask-composite:source-in; mask-image:linear-gradient(to right,transparent,#000 6%,#000 94%,transparent),linear-gradient(to bottom,transparent,#000 6%,#000 94%,transparent); mask-composite:intersect; }
+.ref-img::after{ content:""; position:absolute; inset:-7px; pointer-events:none; --c:var(--ink-3);
+  background:
+   linear-gradient(var(--c),var(--c)) left top/11px 1px no-repeat, linear-gradient(var(--c),var(--c)) left top/1px 11px no-repeat,
+   linear-gradient(var(--c),var(--c)) right top/11px 1px no-repeat, linear-gradient(var(--c),var(--c)) right top/1px 11px no-repeat,
+   linear-gradient(var(--c),var(--c)) left bottom/11px 1px no-repeat, linear-gradient(var(--c),var(--c)) left bottom/1px 11px no-repeat,
+   linear-gradient(var(--c),var(--c)) right bottom/11px 1px no-repeat, linear-gradient(var(--c),var(--c)) right bottom/1px 11px no-repeat; }
+.ref figcaption{ display:flex; flex-direction:column; gap:2px; margin-top:12px; font-stretch:75%; font-weight:600; font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); font-variant-numeric:tabular-nums; }
+.ref figcaption b{ color:var(--ink); font-weight:650; margin-right:8px; }
+.ref figcaption .z{ opacity:.8; }
+#lb{ position:fixed; inset:0; z-index:6; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:max(56px,env(safe-area-inset-top,0px)) 24px 32px; background:color-mix(in srgb, var(--paper) 94%, transparent); opacity:0; visibility:hidden; transition:opacity .25s, visibility .25s; cursor:zoom-out; }
+#lb.on{ opacity:1; visibility:visible; }
+#lb img{ max-width:min(1100px,100%); max-height:calc(100% - 60px); object-fit:contain; mix-blend-mode:multiply; }
+#lb p{ margin:0; font-stretch:75%; font-weight:600; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-2); text-align:center; }
+#lb p b{ color:var(--ink); }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .ref{ mix-blend-mode:normal; } :root:not([data-theme="light"]) .ref-img, :root:not([data-theme="light"]) #lb img{ background:#ECEBE7; mix-blend-mode:normal; } }
+:root[data-theme="dark"] .ref{ mix-blend-mode:normal; } :root[data-theme="dark"] .ref-img, :root[data-theme="dark"] #lb img{ background:#ECEBE7; mix-blend-mode:normal; }
+@media (max-width: 760px){ .ref{ padding:8px 8px 6px; } .ref figcaption{ font-size:9.5px; margin-top:8px; } .ref figcaption .kind{ display:none; } }
+@media (prefers-reduced-motion: reduce){ #lb{ transition:none; } }
+@media (max-width: 1100px){ .panels{ width:min(360px, 40vw); } }
+@media (max-width: 760px){
+  header.top{ padding:0 18px; } .status .hide-m{ display:none; }
+  nav.rail{ right:8px; } nav.rail button .lbl{ display:none; } nav.rail button{ height:14px; }
+  .panels{ left:0; right:0; top:auto; bottom:0; width:auto; height:48vh; }
+  .panel{ top:auto; bottom:0; padding:28px 44px calc(env(safe-area-inset-bottom,0px) + 22px) 20px; background:linear-gradient(to top, var(--panel-fade) 72%, transparent); }
+  .num{ font-size:40px; margin-bottom:6px; }
+  .panel p{ font-size:14px; margin-bottom:10px; } .panel p.q{ font-size:15px; }
+  .mega{ margin:8px 0 14px; } .specs{ font-size:12px; margin-top:10px; }
+  .parts,.fine.hide-m{ display:none; }
+  .foot{ display:none; } .reg{ display:none; }
+  .co{ max-width:150px; } .co .s{ display:none; } .co .t{ font-size:11px; }
+  #track{ height:calc(17 * 100vh + 100vh); }
+}
+@media (prefers-reduced-motion: reduce){ nav.rail button .lbl, nav.rail button .tick{ transition:none; } #veil{ transition:none; } }
+</style>
+</head>
+<body>
+<canvas id="gl" aria-label="Interactive 3D model of the welos system" role="img"></canvas>
+<div class="grid" aria-hidden="true"></div>
+<i class="reg tl" aria-hidden="true"></i><i class="reg tr" aria-hidden="true"></i><i class="reg bl" aria-hidden="true"></i><i class="reg br" aria-hidden="true"></i>
+<svg id="lines" aria-hidden="true"></svg>
+<div id="labels" aria-hidden="true"></div>
+<figure class="ref" id="ref" aria-hidden="true">
+  <button type="button" id="refBtn" aria-label="Enlarge reference visual"><span class="ref-img"><img id="refImg" alt=""></span></button>
+  <figcaption><span><b id="refCode"></b><span id="refT"></span></span><span class="kind">Reference visual <span class="z">⤢</span></span></figcaption>
+</figure>
+<div id="lb" role="dialog" aria-modal="true" aria-label="Reference visual"><img id="lbImg" alt=""><p><b id="lbCode"></b>&nbsp;&nbsp;<span id="lbT"></span>&nbsp;&nbsp;·&nbsp;&nbsp;Supplied reference visual. The interactive model is the engineering source.</p></div>
+
+<header class="top">
+  <a class="mark" href="#" id="home" aria-label="welos, back to top">wel<span>os</span></a>
+  <div class="status"><span class="hide-m">System <b>01</b></span><span>Scene <b id="sc">00</b> / 16</span><span class="hide-m" id="scn">The object</span></div>
+</header>
+
+<nav class="rail" id="rail" aria-label="Jump to scene"></nav>
+
+<main class="panels" id="panels">
+  <article class="panel" data-s="0">
+    <div class="label">welos<br>System 01</div>
+    <h1 class="mega">POWER.<br>WATER.<br>ANYWHERE.</h1>
+    <p class="q">A compact rooftop system designed to harness renewable energy and put harvested rainwater back to work.</p>
+    <div class="hint">Scroll to explore ↓</div>
+  </article>
+
+  <article class="panel" data-s="1">
+    <div class="label">Exploded view</div>
+    <h2>System architecture</h2>
+    <p class="q">One chassis carries five subsystems: wind, solar and catchment, control, energy, and water.</p>
+    <p>Every part you are about to see is taken from the supplied engineering model. Components move along the direction they would be removed during service.</p>
+    <dl class="specs"><dt>Source model</dt><dd>174 meshes, 27 tagged components</dd><dt>Footprint</dt><dd>One modular chassis</dd></dl>
+  </article>
+
+  <article class="panel" data-s="2">
+    <span class="num w">01</span>
+    <div class="label">Wind generation</div>
+    <h2>Vertical-axis wind turbine</h2>
+    <p class="q">Captures wind from multiple directions while maintaining a compact vertical footprint.</p>
+    <p>A helical rotor drives a direct-drive permanent-magnet generator. A fail-safe brake stops it for faults, extreme wind and service, independent of any cloud connection.</p>
+    <dl class="specs"><dt>Rated output</dt><dd>400 W</dd><dt>Cut-in speed</dt><dd>2.0 m/s</dd><dt>Acoustic target</dt><dd>Below 45 dB</dd><dt>Rotor type</dt><dd>Hybrid Savonius–Darrieus</dd></dl>
+    <p class="fine">Design targets from the product roadmap. Not yet field-verified.</p>
+  </article>
+
+  <article class="panel" data-s="3">
+    <span class="num s">02</span>
+    <div class="label">Solar generation</div>
+    <h2>Solar panel array</h2>
+    <p class="q">Converts available sunlight into electrical energy for the integrated system.</p>
+    <p>The six-module canopy has a second job: it is the rain-catching surface for the water system.</p>
+    <ul class="flow s"><li><span>Sunlight</span></li><li><span>Photovoltaic array</span></li><li><span>Electrical energy</span></li></ul>
+    <dl class="specs"><dt>Array rating</dt><dd>800 W DC</dd><dt>Module efficiency</dt><dd>21.5%</dd></dl>
+    <p class="fine">Design targets from the product roadmap. Not yet field-verified.</p>
+  </article>
+
+  <article class="panel" data-s="4">
+    <span class="num">03</span>
+    <div class="label">Protective chassis</div>
+    <h2>Enclosure and structure</h2>
+    <p class="q">IP-rated enclosures protect the control and power electronics while a hinged door keeps everything reachable for maintenance.</p>
+    <p>Devices mount on a grounded backplate with segregated cabling. Four posts carry the canopy loads down into the base.</p>
+  </article>
+
+  <article class="panel" data-s="5">
+    <span class="num">04</span>
+    <div class="label">Power &amp; control</div>
+    <h2>Energy management</h2>
+    <p class="q">Coordinates energy generated by the solar and wind subsystems and manages its delivery through the system.</p>
+    <div class="bus" aria-label="Energy architecture">
+      <span class="n sol">Solar MPPT</span><span class="a">→</span><span class="n" style="grid-row:span 2">48 V DC bus</span>
+      <span class="n wnd">Wind rectifier</span><span class="a">→</span>
+      <span></span><span></span><span class="a">↓</span>
+      <span class="n">Battery</span><span class="a">←</span><span class="n">Inverter → Loads</span>
+    </div>
+    <ul class="parts">
+      <li><b>E01</b>Solar MPPT charger</li><li><b>E02</b>Wind rectifier + dump load</li>
+      <li><b>E03</b>LiFePO4 battery + BMS</li><li><b>E04</b>Protected DC bus</li>
+      <li><b>E05</b>Hybrid inverter</li><li><b>E06</b>Critical-load panel</li>
+      <li><b>C03</b>Edge controller</li><li><b>C04</b>Energy meter</li>
+      <li><b>C05</b>Protection rail</li><li><b>C06</b>Comms gateway</li>
+    </ul>
+    <dl class="specs"><dt>Storage</dt><dd>3.5 kWh usable, 48 V LiFePO4</dd><dt>Controller</dt><dd>ESP32 / STM32, 1 Hz sensing</dd><dt>Links</dt><dd>Wi-Fi, BLE, LoRaWAN</dd></dl>
+  </article>
+
+  <article class="panel" data-s="6">
+    <span class="num b">05</span>
+    <div class="label">Rain catchment</div>
+    <h2>Gutter and first flush</h2>
+    <p class="q">Rain runs off the panel canopy into a perimeter gutter. A first-flush diverter rejects the initial runoff, which carries the most dust and debris.</p>
+    <p>Rain sensing triggers the diversion before anything reaches storage.</p>
+    <dl class="specs"><dt>Capture rate</dt><dd>50 L/min</dd></dl>
+    <p class="fine">Design target from the product roadmap.</p>
+  </article>
+
+  <article class="panel" data-s="7">
+    <span class="num b">06</span>
+    <div class="label">Water storage</div>
+    <h2>Protected storage tank</h2>
+    <p class="q">Harvested rainwater is held in an opaque, protected tank with screened vent, overflow and drain connections.</p>
+    <p>Sensors track level, flow, pressure, turbidity, conductivity and leaks so the controller can automate safely.</p>
+    <dl class="specs"><dt>Capacity</dt><dd>300 L</dd></dl>
+    <p class="fine">Design target from the product roadmap.</p>
+  </article>
+
+  <article class="panel" data-s="8">
+    <span class="num b">07</span>
+    <div class="label">Multi-stage treatment</div>
+    <h2>Filter and UV train</h2>
+    <p class="q">Water moves through sequential treatment stages before it is used.</p>
+    <ul class="flow b"><li><span>Sediment filtration</span></li><li><span>Carbon filtration</span></li><li><span>UV-C disinfection</span></li></ul>
+    <dl class="specs"><dt>Treatment rate</dt><dd>10 L/min</dd><dt>Supply</dt><dd>Non-potable</dd></dl>
+    <p class="fine">Water testing defines final treatment. Potable use needs separate certification.</p>
+  </article>
+
+  <article class="panel" data-s="9">
+    <span class="num b">08</span>
+    <div class="label">Pump &amp; delivery</div>
+    <h2>Variable-speed pump</h2>
+    <p class="q">Pressurises treated water on demand for irrigation, panel cleaning and other approved non-potable loads.</p>
+    <p>One outlet returns to the canopy: a low-flow manifold that rinses the panels when the controller detects soiling.</p>
+  </article>
+
+  <article class="panel" data-s="10">
+    <span class="num">09</span>
+    <div class="label">Structural foundation</div>
+    <h2>Base frame</h2>
+    <p class="q">Supports the integrated system and provides a stable platform for its mechanical components.</p>
+    <p>A base plate and frame sit on four mounting feet. Canopy posts and the turbine mast land directly on it.</p>
+  </article>
+
+  <article class="panel" data-s="11">
+    <div class="label">Full exploded view</div>
+    <h2 class="mega sm">ONE SYSTEM.<br>TWO ESSENTIAL RESOURCES.</h2>
+    <p class="q">Energy + water.</p>
+  </article>
+
+  <article class="panel" data-s="12">
+    <div class="label">How energy moves</div>
+    <h2 class="mega sm">HARVEST.</h2>
+    <p class="q">welos captures available renewable energy from its environment.</p>
+    <p>Generation serves household loads first. Surplus charges the battery, then powers water treatment or exports to the grid. The battery holds a 20% reserve floor.</p>
+  </article>
+
+  <article class="panel" data-s="13">
+    <div class="label">How water moves</div>
+    <h2 class="mega sm">TREAT.</h2>
+    <p class="q">Water moves through an integrated treatment architecture before use.</p>
+    <ul class="flow b"><li><span>Rain on canopy</span></li><li><span>Gutter + first flush</span></li><li><span>Storage</span></li><li><span>Filter + UV train</span></li><li><span>Pump</span></li><li><span>Output</span></li></ul>
+  </article>
+
+  <article class="panel" data-s="14">
+    <div class="label">The connection</div>
+    <h2 class="mega sm">NOT SEPARATE TECHNOLOGIES.</h2>
+    <h2 class="mega sm two" id="oneSys">ONE INTEGRATED SYSTEM.</h2>
+    <p class="q">Renewable power runs the pump and treatment. Stored rainwater rinses the panels when the controller detects a soiling loss above 15%.</p>
+  </article>
+
+  <article class="panel" data-s="15">
+    <div class="label">Reassembly</div>
+    <h2>Back together</h2>
+    <ol class="steps" id="steps">
+      <li><i>01</i>Base locks</li><li><i>02</i>Storage returns</li><li><i>03</i>Treatment returns</li><li><i>04</i>Pump returns</li>
+      <li><i>05</i>Power electronics return</li><li><i>06</i>Chassis closes</li><li><i>07</i>Solar array lowers</li><li><i>08</i>Turbine descends</li>
+    </ol>
+  </article>
+
+  <article class="panel" data-s="16">
+    <h2 class="mega">ENERGY ABOVE.<br>WATER WITHIN.</h2>
+    <p class="q" style="margin-bottom:4px"><span class="mark" style="font-size:30px">wel<span>os</span></span></p>
+    <p class="q">Independent infrastructure, engineered as one system.</p>
+    <div class="cta"><button type="button" id="ctaExplore">Explore the system</button><button type="button" class="ghost" id="ctaTech">View technology</button></div>
+  </article>
+</main>
+
+<div class="foot"><span>Model <b>174 meshes</b></span><span id="ro">AZ 0.0° EL 0.0°</span><span>Concept hardware. Figures are roadmap design targets.</span></div>
+<div id="track" aria-hidden="true"></div>
+<div id="veil"><p id="veilMsg">Assembling the model</p></div>
+
+<script type="module" src="/src/explore/main.js"></script>
+</body>
+</html>

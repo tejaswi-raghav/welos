@@ -11,6 +11,7 @@ export default defineConfig({
         control: resolve(__dirname, "control.html"),
         model: resolve(__dirname, "model.html"),
         configure: resolve(__dirname, "configure.html"),
+        explore: resolve(__dirname, "explore.html"),
       },
     },
   },

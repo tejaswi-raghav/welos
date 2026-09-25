@@ -12,6 +12,7 @@ Open the local URL shown by Vite. The product tools are separate entry points:
 
 - `/` — cinematic product story
 - `/model.html` — integrated rooftop 3D appliance with selectable hardware, software stack and full-system separation
+- `/explore.html` — scroll-driven exploded-view story of the same appliance, with supplied reference visuals tied to each subsystem
 - `/control.html` — live WELOS OS simulator
 
 ## Product foundation
